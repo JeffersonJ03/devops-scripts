@@ -31,19 +31,19 @@ log "Usuario $USERNAME agregado al grupo sudo."
 
 # Agregar clave publica al usuario
 log "Validando ruta de .ssh ..."
-if [ ! -d "/home/$USERNAME/.ssh" ]; then
-    log "Creando carpeta .ssh para el usuario $USERNAME ..."
-    mkdir -p "/home/$USERNAME/.ssh"
-    chown "$USERNAME:$USERNAME" "/home/$USERNAME/.ssh"
-    chmod 700 "/home/$USERNAME/.ssh"
-    touch "/home/$USERNAME/.ssh/authorized_keys"
-    chown "$USERNAME:$USERNAME" "/home/$USERNAME/.ssh/authorized_keys"
-    chmod 600 "/home/$USERNAME/.ssh/authorized_keys"
-    log "Carpeta .ssh creada y permisos configurados."
+mkdir -p "/home/$USERNAME/.ssh"
+chown "$USERNAME:$USERNAME" "/home/$USERNAME/.ssh"
+chmod 700 "/home/$USERNAME/.ssh"
+touch "/home/$USERNAME/.ssh/authorized_keys"
+chown "$USERNAME:$USERNAME" "/home/$USERNAME/.ssh/authorized_keys"
+chmod 600 "/home/$USERNAME/.ssh/authorized_keys"
 
-    log "Agregando clave publica al usuario $USERNAME ..."
+log "Agregando clave publica al usuario $USERNAME ..."
+if [ ! grep -qF "KEY" "/home/$USERNAME/.ssh/authorized_keys" 2>/dev/null ]; then
     echo "$KEY" >> "/home/$USERNAME/.ssh/authorized_keys"
     log "Clave publica agregada al usuario $USERNAME."
+else
+    log "La clave publica ya existe para el usuario $USERNAME."
 fi
 
 # Aplicando handering de seguridad
@@ -93,6 +93,16 @@ if systemctl is-active --quiet firewalld; then
 else
     log "ERROR: Firewall no esta corriendo. Verifica el estado del servicio."
     exit 1
+fi
+
+# Instalando a Git
+log "Verificando si git esta instalado ..."
+if ! command -v git &> /dev/null; then
+    log "Instalando git ..."
+    dnf install -y git
+    log "git instalado."
+else
+    log "git ya esta instalado."
 fi
 
 # Notificar a Webhook
