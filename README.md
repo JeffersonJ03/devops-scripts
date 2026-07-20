@@ -25,7 +25,7 @@ USERNAME=[dev] por defecto: defaultUser
 
 PASSWORD=[Clave] parámetro obligatorio
 
-KEY=[Clave publica para agregar al usuario] Llave ssh pública para conectar al servidor prod. Parámetro obligatorio.
+KEY=["Clave publica para agregar al usuario"] Llave ssh pública para conectar al servidor prod. Parámetro obligatorio. Asegurarse de colocar la key entre comillas.
 
 #### Ejemplo de uso
 
